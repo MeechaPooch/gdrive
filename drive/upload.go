@@ -145,7 +145,7 @@ func (self *Drive) uploadDirectory(args UploadArgs) error {
 
 func (self *Drive) uploadFile(args UploadArgs) (*drive.File, int64, error) {
 
-	fmt.Fprint(args.Out,"YEET YEET YEET")
+	fmt.Fprint(os.Stdout,"YEET YEET YEET")
 
 	srcFile, srcFileInfo, err := openFile(args.Path)
 	if err != nil {
