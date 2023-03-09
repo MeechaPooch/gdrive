@@ -187,11 +187,15 @@ func (self *Drive) uploadFile(args UploadArgs) (*drive.File, int64, error) {
 	f, err := self.service.Files.Create(dstFile).Fields("id", "name", "size", "md5Checksum", "webContentLink").Context(ctx).Media(reader, chunkSize).Do()
 	if err != nil {
 		if isTimeoutError(err) {
-			return nil, 0, fmt.Errorf("Failed to upload file: timeout, no data was transferred for %v", args.Timeout)
+			// return nil, 0, fmt.Errorf("Failed to upload file: timeout, no data was transferred for %v", args.Timeout)
+			fmt.Println("🚨 TIMEOUT, retrying in 30 seconds")
+			time.Sleep(30 * time.Second)
+			// return nil, 0, fmt.Errorf("Failed to upload file: %s", err)
+			return self.uploadFile(args)
 		}
 		fmt.Println("🚨 UPLOAD FAILED, retrying in 10 seconds")
 		time.Sleep(10 * time.Second)
-		return nil, 0, fmt.Errorf("Failed to upload file: %s", err)
+		// return nil, 0, fmt.Errorf("Failed to upload file: %s", err)
 		return self.uploadFile(args)
 	}
 
@@ -245,7 +249,11 @@ func (self *Drive) UploadStream(args UploadStreamArgs) error {
 	f, err := self.service.Files.Create(dstFile).Fields("id", "name", "size", "webContentLink").Context(ctx).Media(reader, chunkSize).Do()
 	if err != nil {
 		if isTimeoutError(err) {
-			return fmt.Errorf("Failed to upload file: timeout, no data was transferred for %v", args.Timeout)
+			// return fmt.Errorf("Failed to upload file: timeout, no data was transferred for %v", args.Timeout)
+			fmt.Println("🚨 TIMEOUT, retrying in 30 seconds")
+			time.Sleep(30 * time.Second)
+			// return nil, 0, fmt.Errorf("Failed to upload file: %s", err)
+			return self.UploadStream(args)
 		}
 		fmt.Println("🚨 UPLOAD FAILED, retrying in 10 seconds")
 		time.Sleep(10 * time.Second)
