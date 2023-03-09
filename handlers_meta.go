@@ -6,7 +6,6 @@ import (
 	"runtime"
 	"strings"
 	"text/tabwriter"
-
 	"github.com/meechapooch/gdrive/cli"
 )
 
