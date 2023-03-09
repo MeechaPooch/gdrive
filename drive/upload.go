@@ -189,7 +189,10 @@ func (self *Drive) uploadFile(args UploadArgs) (*drive.File, int64, error) {
 		if isTimeoutError(err) {
 			return nil, 0, fmt.Errorf("Failed to upload file: timeout, no data was transferred for %v", args.Timeout)
 		}
+		fmt.Println("🚨 UPLOAD FAILED, retrying in 10 seconds")
+		time.Sleep(10 * time.Second)
 		return nil, 0, fmt.Errorf("Failed to upload file: %s", err)
+		return self.uploadFile(args)
 	}
 
 	// Calculate average upload rate
@@ -244,7 +247,10 @@ func (self *Drive) UploadStream(args UploadStreamArgs) error {
 		if isTimeoutError(err) {
 			return fmt.Errorf("Failed to upload file: timeout, no data was transferred for %v", args.Timeout)
 		}
-		return fmt.Errorf("Failed to upload file: %s", err)
+		fmt.Println("🚨 UPLOAD FAILED, retrying in 10 seconds")
+		time.Sleep(10 * time.Second)
+		// return fmt.Errorf("Failed to upload file: %s", err)
+		return self.UploadStream(args)
 	}
 
 	// Calculate average upload rate
