@@ -2,13 +2,14 @@ package drive
 
 import (
 	"fmt"
-	"google.golang.org/api/drive/v3"
-	"google.golang.org/api/googleapi"
 	"io"
 	"mime"
 	"os"
 	"path/filepath"
 	"time"
+
+	"google.golang.org/api/drive/v3"
+	"google.golang.org/api/googleapi"
 )
 
 type UploadArgs struct {
@@ -108,16 +109,20 @@ func (self *Drive) uploadDirectory(args UploadArgs) error {
 	// Close file on function exit
 	defer srcFile.Close()
 
-	fmt.Fprintf(args.Out, "Creating directory %s\n", srcFileInfo.Name())
-	// Make directory on drive
-	f, err := self.mkdir(MkdirArgs{
-		Out:         args.Out,
-		Name:        srcFileInfo.Name(),
-		Parents:     args.Parents,
-		Description: args.Description,
-	})
-	if err != nil {
-		return err
+	var f *drive.File = nil
+
+	for {
+		fmt.Fprintf(args.Out, "Creating directory %s\n", srcFileInfo.Name())
+		// Make directory on drive
+		f, err = self.mkdir(MkdirArgs{
+			Out:         args.Out,
+			Name:        srcFileInfo.Name(),
+			Parents:     args.Parents,
+			Description: args.Description,
+		})
+		if err == nil {
+			break
+		}
 	}
 
 	// Read files from directory
@@ -145,7 +150,7 @@ func (self *Drive) uploadDirectory(args UploadArgs) error {
 
 func (self *Drive) uploadFile(args UploadArgs) (*drive.File, int64, error) {
 
-	fmt.Fprint(os.Stdout,"YEET YEET YEET")
+	fmt.Fprint(os.Stdout, "PETTE PETTE PETTE")
 
 	srcFile, srcFileInfo, err := openFile(args.Path)
 	if err != nil {
